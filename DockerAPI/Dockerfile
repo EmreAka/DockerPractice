@@ -3,8 +3,9 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY . .
+COPY ["DockerAPI.csproj", "./"]
 RUN dotnet restore "DockerAPI.csproj"
+COPY . .
 
 FROM build AS publish
 RUN dotnet publish "DockerAPI.csproj" -c Release -o /app/publish
