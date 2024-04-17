@@ -1,0 +1,9 @@
+/.idea/.idea.Docker/.idea/.gitignore
+/.idea/.idea.Docker/.idea/discord.xml
+
+**/.idea/
+
+**/bin/
+**/obj/
+
+
