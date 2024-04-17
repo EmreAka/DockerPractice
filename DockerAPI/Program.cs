@@ -1,7 +1,11 @@
+using Application;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<GreetingService>();
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", (GreetingService service) => service.Greet("Emre"));
 
 app.Run();
