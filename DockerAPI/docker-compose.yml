@@ -1,0 +1,10 @@
+﻿services:
+  docker-api:
+    container_name: docker-api
+    mem_limit: 1G
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    build:
+      context: ../
+      dockerfile: DockerAPI/Dockerfile
