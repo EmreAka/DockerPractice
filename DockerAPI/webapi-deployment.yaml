@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapi-deployment
+  labels:
+    app: webapi
+# Deployment Specific Specifications.
+spec:
+  replicas: 1
+  selector:
+    # Label Selector. It is used to select the pods that the deployment will manage.
+    matchLabels:
+      app: webapi
+  # Configuration of the Pod within the configuration of deployment.
+  # Configures the pod within the deployment.
+  template:
+    metadata:
+      # Each pod replicas will have a unique name but they can share the same label.
+      # Key - Value pairs. Any key can be assigned. 
+      # It is required for pods but optional for Deployments.
+      labels:
+        app: webapi
+    # Specifying the container within the pod.
+    spec:
+      # A pod can have multiple containers but generally there is only one main application per pod.
+      containers:
+        - name: webapi
+          # How to use local image ?
+          image: cranberrywine/webapi:2.0
+          ports:
+            # Port of the container (My Web API listens to port 8080).
+            - hostPort: 8080
+              containerPort: 8080
+          env:
+            - name: USER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-user
+            - name: USER_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-password
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: mongo-url
+            - name: NAME_TO_GREET
+              value: Emre AKA The Code Monster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapi-service
+spec:
+  # Default is ClusterIP.
+  type: NodePort
+  selector:
+    app: webapi
+  ports:
+    - protocol: TCP
+      # Port of the service.
+      port: 8080
+      # Port of the pod.
+      targetPort: 8080
+      # NodePort is the port that the service will listen to on the node.
+      # Node Ip address and port number will be used to access the service.
+      nodePort: 30100

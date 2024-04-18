@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+  labels:
+    app: mongo
+# Deployment Specific Specifications.
+spec:
+  replicas: 1
+  selector:
+    # Label Selector. It is used to select the pods that the deployment will manage.
+    matchLabels:
+      app: mongo
+  # Configuration of the Pod within the configuration of deployment.
+  # Configures the pod within the deployment.
+  template:
+    metadata:
+      # Each pod replicas will have a unique name but they can share the same label.
+      # Key - Value pairs. Any key can be assigned. 
+      # It is required for pods but optional for Deployments.
+      labels:
+        app: mongo
+    # Specifying the container within the pod.
+    spec:
+      # A pod can have multiple containers but generally there is only one main application per pod.
+      containers:
+        - name: mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-user
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    app: mongo
+  ports:
+    - protocol: TCP
+      # Port of the service.
+      port: 27017
+      # Port of the pod.
+      targetPort: 27017
