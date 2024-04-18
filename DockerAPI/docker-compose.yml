@@ -8,3 +8,5 @@
     build:
       context: ../
       dockerfile: DockerAPI/Dockerfile
+    environment:
+      - NAME_TO_GREET=Emre
