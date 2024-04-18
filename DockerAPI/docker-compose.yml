@@ -1,0 +1,8 @@
+﻿services:
+  docker-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: docker-api
+    ports:
+      - 8080:8080
